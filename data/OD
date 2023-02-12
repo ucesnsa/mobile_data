@@ -1,0 +1,6 @@
+SELECT origin_code, sum(number_of_users::numeric) FROM public.mobile_dest
+	group by origin_code
+
+
+SELECT destination_code, sum(number_of_users::numeric) FROM public.mobile_dest
+	group by destination_code	
