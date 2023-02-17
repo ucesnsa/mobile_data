@@ -19,8 +19,8 @@ pd.set_option('display.max_columns', 20)
 pd.set_option('display.width', 2000)
 
 # read files
-read_csv = 'OD(L1).csv'
-read_json = 'greater_london.geojson'
+read_csv = 'data/OD(L1).csv'
+read_json = 'data/greater_london.geojson'
 
 #read in dataframe
 df_OD = pd.read_csv(read_csv)
@@ -41,7 +41,7 @@ df_OD = sn.displot(df_OD, x="sum_norm", bins=20, stat="probability")
 #df_new.plot(column='sum')
 
 #save fig png
-plt.savefig('Probability Distribution.png', dpi=300)
+plt.savefig('images/Probability Distribution.png', dpi=300)
 matplotlib.pyplot.show()
 
 #Task6. Once we decide which Hex to look at, we need a map of the actual flows.

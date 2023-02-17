@@ -19,19 +19,22 @@ file_geojson = 'data/geojson/greater_london.geojson'
 # plot data
 #file_origin_sum = 'data/Origin_sum.csv'
 #file_destination_sum = 'data/Destination_sum.csv'
-file_destination_sum = 'data/Destination_sum.csv'
-file_od = 'data/OD(L1).csv'
+
+#file_od = 'data/OD(L1).csv'
+file_od = 'data/FromL1toL2.csv'
 
 
 df_json = gpd.read_file(file_geojson)
 #df_origin_sum = pd.read_csv(file_origin_sum)
-df_destination_sum = pd.read_csv(file_destination_sum)
+#df_destination_sum = pd.read_csv(file_destination_sum)
 df_od = pd.read_csv(file_od)
+df_origin_sum = df_od['origin_code'].unique()
+
 
 #df_origin_sum = df_origin_sum.sort_values(by=['sum'], ascending=False)
 #df_origin_sum = df_origin_sum.iloc[:SELECTED_ORIGIN_COUNT]
-df_destination_sum = df_destination_sum.sort_values(by=['sum'], ascending=False)
-df_destination_sum = df_destination_sum.iloc[:SELECTED_DESTINATION_COUNT]
+#df_destination_sum = df_destination_sum.sort_values(by=['sum'], ascending=False)
+#df_destination_sum = df_destination_sum.iloc[:SELECTED_DESTINATION_COUNT]
 
 df_json["lon"] = df_json["geometry"].centroid.x
 df_json["lat"] = df_json["geometry"].centroid.y
@@ -43,8 +46,8 @@ df_json = df_json.to_crs(epsg=4326)
 # find the OD for the selected origin codes
 #df_od_merged = df_origin_sum[['origin_code']].merge(df_od, left_on=['origin_code'],
 #                                                    right_on=['origin_code'], how='inner')
-df_od_merged = df_destination_sum[['destination_code']].merge(df_od, left_on=['destination_code'],
-                                                    right_on=['destination_code'], how='inner')
+df_od_merged = df_od
+
 print(df_od_merged.head(20))
 df_od_merged.to_csv('data/df_od_merged.csv')
 
@@ -75,7 +78,7 @@ for count, elem in enumerate(df_json['_index']):
     pos[elem] = (mx[count], my[count])
 
 #origin_node_list = df_origin_sum['origin_code'].tolist()
-destination_node_list = df_destination_sum['destination_code'].tolist()
+destination_node_list = df_od_merged['target'].unique().tolist()
 all_nodes_list = graph.nodes()
 
 # find all non origin nodes
@@ -122,8 +125,8 @@ legend_elements = [Line2D([0], [0], marker='o', color='w', label='Origin',
 
 plt.legend(handles=legend_elements, loc='upper right')
 #plt.title('Workers flow from top 10 origin to destination points')
-plt.title('Workers flow from origins to top 10 destination points')
+plt.title('Workers flow from top 10 destination to top 10 destination points - L2')
 plt.tight_layout()
 #plt.savefig("./images/map_top10origin.png", format="png", dpi=300)
-plt.savefig("./images/map_top10destination.png", format="png", dpi=300)
+plt.savefig("./images/map_top10destinationL2.png", format="png", dpi=300)
 plt.show()
