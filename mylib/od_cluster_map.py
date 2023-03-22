@@ -27,13 +27,14 @@ def get_colour_list(lst):
     return col_lst
 
 
-def add_legend(pl, src_cl_lst):
+def add_legend(pl, src_cl_lst, node_loc):
     handle_lst = list()
     index = 0
     for hex_id, hex_colour in src_cl_lst:
         l1 = Line2D([0], [0], marker='o', color='w', label=hex_id,
-                    markerfacecolor=hex_colour, markersize=10)
-        index = + index
+                    markerfacecolor=hex_colour, markersize=4)
+        print(hex_id, ' - ', node_loc[index])
+        index = index + 1
         handle_lst.append(l1)
 
     # legend_elements = np.array(handle_lst)
@@ -64,10 +65,13 @@ def create_od_cluster_plot(df_od_merged, df_json, direction_type, title, root_lo
 
     m.readshapefile(file_shape_london, 'metro', linewidth=.15)
     mx, my = m(df_json['lon'].values, df_json['lat'].values)
+    x_loc, y_loc = (df_json['lon'].values, df_json['lat'].values)
 
     pos = {}
+    pos_org = {}
     for count, elem in enumerate(df_json['_index']):
         pos[elem] = (mx[count], my[count])
+        pos_org[elem] = (y_loc[count], x_loc[count]) # change to lat, lon
 
     all_nodes_list = graph.nodes()
     edges = graph.edges()
@@ -76,12 +80,15 @@ def create_od_cluster_plot(df_od_merged, df_json, direction_type, title, root_lo
     if direction_type == 'SOURCE':
         cluster_node_list = df_od_merged['source'].unique().tolist()
         cluster_colour_list = get_colour_list(cluster_node_list)
+        cluster_node_loc = [pos_org[n] for n in cluster_node_list]
 
         # loop through two list with tuples of two values
         edge_colours = [t[1] for t in cluster_colour_list for s in edges if t[0] == s[0]]
     else:
         cluster_node_list = df_od_merged['target'].unique().tolist()
         cluster_colour_list = get_colour_list(cluster_node_list)
+        cluster_node_loc = [pos_org[n] for n in cluster_node_list]
+
         # loop through two list with tuples of two values
         edge_colours = [t[1] for t in cluster_colour_list for s in edges if t[0] == s[1]]
 
@@ -104,7 +111,7 @@ def create_od_cluster_plot(df_od_merged, df_json, direction_type, title, root_lo
     nx.draw_networkx_edges(G=graph, pos=pos, alpha=0.6, arrows=True,
                            edge_color=edge_colours, width=weights2)
 
-    add_legend(plt, cluster_colour_list)
+    add_legend(plt, cluster_colour_list, cluster_node_loc)
 
     # Avoid border around map.
     m.drawmapboundary(fill_color='#ffffff', linewidth=.0)

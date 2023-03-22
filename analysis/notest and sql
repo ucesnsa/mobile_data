@@ -1,0 +1,15 @@
+-- worker and all movement modalities 
+-- 1 week of data 
+-- data dimensions (day/dates , time interval )
+--  can potentially look at the same day over multiple days for comparison (weekend /weekday) 
+-- same interval over different dates /days (weekend/weekday)
+
+select "day","time_interval","day_type",
+count(*) from mobile_dest 
+group by "day","time_interval","day_type"
+
+-- this is the movement of people analysis 
+-- to understand how many people are in a specific polgon and staying there at a given point
+-- time we can potentially use the same data set and filter where origin and destination 
+-- is the same and plot the polygon in different colour at difffernt time intervals in the day
+

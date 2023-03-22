@@ -1,6 +1,8 @@
 with od_top10dest as
 (SELECT destination_code as node_code,sum(NUMBER_OF_USERS::numeric)
  FROM mobile_dest_all
+  where 1=1
+ @my_filter
  group by destination_code
  order by sum(NUMBER_OF_USERS::numeric) desc
  limit 10)
@@ -10,6 +12,7 @@ rank() over (partition by origin_code order by sum(NUMBER_OF_USERS::numeric) des
 FROM mobile_dest_all
 where origin_code in (select node_code from od_top10dest)
 and origin_code != destination_code
+@my_filter
 group by origin_code, destination_code
 having sum(NUMBER_OF_USERS::numeric) > 0) ranked
-where rank <51;
+where rank < @edge_count;
