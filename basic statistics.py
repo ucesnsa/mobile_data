@@ -44,12 +44,3 @@ df_OD = sn.displot(df_OD, x="sum_norm", bins=20, stat="probability")
 plt.savefig('images/Probability Distribution.png', dpi=300)
 matplotlib.pyplot.show()
 
-#Task6. Once we decide which Hex to look at, we need a map of the actual flows.
-
-#Ideally, we need to take a network approach where each Hex is a node, and the links and weights come from
-#the OD matrix. But for a quick look, we can do the following:
-#Rank all Origin from higher to low sum_numer_of_users. We will have a fat tail of small ranks, as expected.
-#Let's make an arbitrary cut of the first 50 ranks and then find all the Destination Hex for these 100. We can produce a couple of maps:
-#Plot the 50Hex along with their corresponding Destination Hexagons.
-#Plot the actual flows between polygons. There are some packages in Python or plug-ins in QGIS to draw flows
-#between points. I don't remember the right now names but you can google around.
